@@ -13,7 +13,7 @@ const BASE_URL = "https://lldev.thespacedevs.com/2.3.0";
 // - Makes a GET request to BASE_URL + "/launches/upcoming/"
 // - Parses the response
 // - Calls the callback function and passes the results array
-function getUpcomingLaunches(callback) {
+function getUpcomingLaunches() {
   const status = document.getElementById("status");
   status.textContent = "Loading...";
   
@@ -21,7 +21,7 @@ function getUpcomingLaunches(callback) {
     status.textContent = "";
     populateDropdown(response.data.results);
   }).catch(function (error){
-    status.textContent = "Could not load upcoming launches. Please try again later.";
+    status.textContent = "Could not load launch details: " + error.message;
     console.error(error);
   });
 }
@@ -49,7 +49,7 @@ document.getElementById("launchDropdown").addEventListener("change", function ()
 // Step 4: Create getLaunchDetails(launchId, callback)
 // - Makes a GET request to BASE_URL + "/launches/" + launchId + "/"
 // - Parses the response and passes the launch object to the callback
-function getLaunchDetails(launchId, callback) {
+function getLaunchDetails(launchId) {
   const status = document.getElementById("status");
   status.textContent = "Loading...";
   
@@ -57,7 +57,7 @@ function getLaunchDetails(launchId, callback) {
     status.textContent = "";
     displayLaunchInfo(response.data);
   }).catch(function (error){
-    status.textContent = "Could not load launch details. Please try again later.";
+    status.textContent = "Could not load launch details: " + error.message;
     console.error(error);
   });
 }
