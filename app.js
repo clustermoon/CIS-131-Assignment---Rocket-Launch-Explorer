@@ -31,7 +31,12 @@ function getUpcomingLaunches(callback) {
 // - Receives an array of launches
 // - Adds one <option> per launch: text = launch name, value = launch id
 function populateDropdown(launches) {
-  // TODO: Iterate and append <option> elements
+  for (const launch of launches) {
+    const option = document.createElement("option");
+    option.text = launch.name;
+    option.value = launch.id;
+    document.getElementById("launchDropdown").appendChild(option);
+  }
 }
 
 // Step 3: Add event listener to #launchDropdown
