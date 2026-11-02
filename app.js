@@ -14,17 +14,16 @@ const BASE_URL = "https://lldev.thespacedevs.com/2.3.0";
 // - Parses the response
 // - Calls the callback function and passes the results array
 function getUpcomingLaunches(callback) {
-  const xhr = new XMLHttpRequest();
-  xhr.open("GET", BASE_URL + "/launches/upcoming/");
+  const status = document.getElementById("status");
+  status.textContent = "Loading...";
   
-  xhr.onreadystatechange = function () {
-    if (xhr.readyState === 4 && xhr.status === 200) {
-      const data = JSON.parse(xhr.responseText);
-      callback(data.results);
-    }
-  };
-
-  xhr.send();
+  axios.get(BASE_URL + "/launches/upcoming/").then(function (response) {
+    status.textContent = "";
+    populateDropdown(response.data.results);
+  }).catch(function (error){
+    status.textContent = "Could not load upcoming launches. Please try again later.";
+    console.error(error);
+  });
 }
 
 // Step 2: Create populateDropdown(launches)
@@ -44,24 +43,23 @@ function populateDropdown(launches) {
 // - Call getLaunchDetails(launchId, callback)
 document.getElementById("launchDropdown").addEventListener("change", function () {
   const launchId = this.value;
-  getLaunchDetails(launchId, displayLaunchInfo);
+  getLaunchDetails(launchId);
 });
 
 // Step 4: Create getLaunchDetails(launchId, callback)
 // - Makes a GET request to BASE_URL + "/launches/" + launchId + "/"
 // - Parses the response and passes the launch object to the callback
 function getLaunchDetails(launchId, callback) {
-  const xhr = new XMLHttpRequest();
-  xhr.open("GET", BASE_URL + "/launches/" + launchId + "/");
+  const status = document.getElementById("status");
+  status.textContent = "Loading...";
   
-  xhr.onreadystatechange = function () {
-    if (xhr.readyState === 4 && xhr.status === 200) {
-      const launch = JSON.parse(xhr.responseText);
-      callback(launch);
-    }
-  };
-
-  xhr.send();
+  axios.get(BASE_URL + "/launches/" + launchId + "/").then(function (response) {
+    status.textContent = "";
+    displayLaunchInfo(response.data);
+  }).catch(function (error){
+    status.textContent = "Could not load launch details. Please try again later.";
+    console.error(error);
+  });
 }
 
 // Step 5: Create displayLaunchInfo(launch)
@@ -101,7 +99,7 @@ function displayLaunchInfo(launch) {
 }
 
 // Final step: kick off the flow
-getUpcomingLaunches(populateDropdown);
+getUpcomingLaunches();
 
 // ---------------------------------------------------------------
 // PART 2: Axios and promises (refactor after Part 1 is committed)
@@ -110,3 +108,4 @@ getUpcomingLaunches(populateDropdown);
 // - Show "Loading..." in #status while a request is pending
 // - Show a clear error message in #status when a request fails
 // - Clear the status message when data arrives
+
