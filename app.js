@@ -43,8 +43,8 @@ function populateDropdown(launches) {
 // - On change, get the selected launch ID
 // - Call getLaunchDetails(launchId, callback)
 document.getElementById("launchDropdown").addEventListener("change", function () {
-  // TODO: Get selected launchId
-  // TODO: Call getLaunchDetails
+  const launchId = this.value;
+  getLaunchDetails(launchId, displayLaunchInfo);
 });
 
 // Step 4: Create getLaunchDetails(launchId, callback)
