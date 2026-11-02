@@ -51,7 +51,17 @@ document.getElementById("launchDropdown").addEventListener("change", function ()
 // - Makes a GET request to BASE_URL + "/launches/" + launchId + "/"
 // - Parses the response and passes the launch object to the callback
 function getLaunchDetails(launchId, callback) {
-  // TODO: Implement XHR GET request for a single launch
+  const xhr = new XMLHttpRequest();
+  xhr.open("GET", BASE_URL + "/launches/" + launchId + "/");
+  
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      const launch = JSON.parse(xhr.responseText);
+      callback(launch);
+    }
+  };
+
+  xhr.send();
 }
 
 // Step 5: Create displayLaunchInfo(launch)
@@ -59,8 +69,35 @@ function getLaunchDetails(launchId, callback) {
 // - Creates an image of the rocket (launch.rocket.configuration.image.image_url) and appends it to #rocket
 // - If no image is available, displays a message instead
 function displayLaunchInfo(launch) {
-  // TODO: Display mission name and description
-  // TODO: Display the rocket image
+  const missionDetails = document.getElementById("missionDetails");
+  const rocket = document.getElementById("rocket");
+
+  missionDetails.innerHTML = "";
+  rocket.innerHTML = "";
+
+  const nameHeading = document.createElement("h2");
+  nameHeading.textContent = launch.name;
+  missionDetails.appendChild(nameHeading);
+
+  const description = document.createElement("p");
+  if (launch.mission && launch.mission.description) {
+    description.textContent = launch.mission.description;
+  } else {
+    description.textContent = "No mission description available.";
+  }
+  missionDetails.appendChild(description);
+
+  const config = launch.rocket && launch.rocket.configuration;
+  if (config && config.image && config.image.image_url) {
+    const img = document.createElement("img");
+    img.src = config.image.image_url;
+    img.alt = config.name || "Rocket image";
+    rocket.appendChild(img);
+  } else {
+    const noImageMsg = document.createElement("p");
+    noImageMsg.textContent = "No rocket image available.";
+    rocket.appendChild(noImageMsg);
+  }
 }
 
 // Final step: kick off the flow
